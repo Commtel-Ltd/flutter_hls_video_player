@@ -21,14 +21,14 @@ flutter pub get
 ### 📽️ Portrait Video
 Check out the player in action:
 
-![Demo GIF](https://lh3.googleusercontent.com/d/1puw_ms4Z3Uu4mORmJWCz_gg-nQ-nwuBZ)
+![Portrait GIF](https://raw.githubusercontent.com/dheeraj11qk/flutter_hls_video_player/main/assets/hls_demo_portrait.gif)
 
 
 
 ### 📽️ Landscape Video
 Check out the player in action:
 
-![Demo GIF](https://lh3.googleusercontent.com/d/1tyT7YlEdzvcyhFjiguq9DkLPd_LKHpnV)
+![Landscape GIF](https://raw.githubusercontent.com/dheeraj11qk/flutter_hls_video_player/main/assets/hls_demo_landscape.gif)
 
 
 
