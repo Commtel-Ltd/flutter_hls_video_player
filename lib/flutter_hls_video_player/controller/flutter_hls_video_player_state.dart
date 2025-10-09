@@ -26,8 +26,8 @@ class FlutterHLSVideoPlayerState {
   final String? errorMessage;
   final double? seekPosition;
   final bool? showControls;
-  final bool? onLeftDoubleTapToSeek;
-  final bool? onRightDoubleTapToSeek;
+  final bool? onLeftTapToSeek;
+  final bool? onRightTapToSeek;
 
   FlutterHLSVideoPlayerState(
       {this.playbackStatus = PlaybackStatus.stop,
@@ -43,8 +43,8 @@ class FlutterHLSVideoPlayerState {
       this.seekPosition = 0.0,
       this.errorMessage = "",
       this.showControls = false,
-      this.onLeftDoubleTapToSeek = false,
-      this.onRightDoubleTapToSeek = false});
+      this.onLeftTapToSeek = false,
+      this.onRightTapToSeek = false});
   FlutterHLSVideoPlayerState copyWith({
     PlaybackStatus? playbackStatus,
     bool? muted,
@@ -59,8 +59,8 @@ class FlutterHLSVideoPlayerState {
     double? seekPosition,
     String? errorMessage,
     bool? showControls,
-    bool? onLeftDoubleTapToSeek,
-    bool? onRightDoubleTapToSeek,
+    bool? onLeftTapToSeek,
+    bool? onRightTapToSeek,
   }) {
     return FlutterHLSVideoPlayerState(
         playbackStatus: playbackStatus ?? this.playbackStatus,
@@ -76,9 +76,9 @@ class FlutterHLSVideoPlayerState {
         seekPosition: seekPosition ?? this.seekPosition,
         errorMessage: errorMessage ?? this.errorMessage,
         showControls: showControls ?? this.showControls,
-        onLeftDoubleTapToSeek:
-            onLeftDoubleTapToSeek ?? this.onLeftDoubleTapToSeek,
-        onRightDoubleTapToSeek:
-            onRightDoubleTapToSeek ?? this.onRightDoubleTapToSeek);
+        onLeftTapToSeek:
+            onLeftTapToSeek ?? this.onLeftTapToSeek,
+        onRightTapToSeek:
+            onRightTapToSeek ?? this.onRightTapToSeek);
   }
 }
