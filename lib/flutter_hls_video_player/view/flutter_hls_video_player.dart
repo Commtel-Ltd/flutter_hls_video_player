@@ -549,14 +549,15 @@ class _FlutterHLSVideoPlayerState extends State<FlutterHLSVideoPlayer> {
                                 (controls.hideRewindWidget == true)
                                     ? const SizedBox()
                                     : GestureDetector(
-                                        onTap: () {
+                                        onTap: () async {
                                           widget.controller
                                               .tapToSeek(isLeft: true);
-                                          widget.controller.seekTo((snapshot
+                                          await widget.controller.seekTo((snapshot
                                                       .data?.currentPosition ??
                                                   0) -
                                               widget.controls!
                                                   .tapToSeekTimeInSecond);
+                                          widget.controller.play();
                                         },
                                         child: Container(
                                             width: mediaQueryData.size.width *
@@ -638,14 +639,15 @@ class _FlutterHLSVideoPlayerState extends State<FlutterHLSVideoPlayer> {
                                 (controls.hideForwardWidget == true)
                                     ? const SizedBox()
                                     : GestureDetector(
-                                        onTap: () {
+                                        onTap: () async {
                                           widget.controller
                                               .tapToSeek(isLeft: false);
-                                          widget.controller.seekTo((snapshot
+                                          await widget.controller.seekTo((snapshot
                                                       .data?.currentPosition ??
                                                   0) +
                                               widget.controls!
                                                   .tapToSeekTimeInSecond);
+                                          widget.controller.play();
                                         },
                                         child: Container(
                                           alignment: Alignment.centerLeft,
