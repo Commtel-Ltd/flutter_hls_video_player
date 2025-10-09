@@ -11,7 +11,7 @@ class FlutterHLSVideoPlayerControls {
   Widget? exitFullscreenWidget;
   Widget? muteWidget;
   Widget? unMuteWidget;
-  int doubleTapToSeekTimeInSecond;
+  int tapToSeekTimeInSecond;
   Function? onTapSetting;
   Function? onTapArrowBack;
   TextStyle? videoDurationTextStyle;
@@ -44,7 +44,7 @@ class FlutterHLSVideoPlayerControls {
       this.arrowBackWidget,
       this.fullscreenWidget,
       this.exitFullscreenWidget,
-      this.doubleTapToSeekTimeInSecond = 5,
+      this.tapToSeekTimeInSecond = 5,
       this.onTapSetting,
       this.onTapArrowBack,
       this.muteWidget,

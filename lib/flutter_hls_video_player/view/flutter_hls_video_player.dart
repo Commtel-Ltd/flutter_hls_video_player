@@ -545,18 +545,18 @@ class _FlutterHLSVideoPlayerState extends State<FlutterHLSVideoPlayer> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               // Rewind
-                              if (state?.onLeftDoubleTapToSeek == false)
+                              if (state?.onLeftTapToSeek == false)
                                 (controls.hideRewindWidget == true)
                                     ? const SizedBox()
                                     : GestureDetector(
-                                        onDoubleTap: () {
+                                        onTap: () {
                                           widget.controller
-                                              .doubleTapToSeek(isLeft: true);
+                                              .tapToSeek(isLeft: true);
                                           widget.controller.seekTo((snapshot
                                                       .data?.currentPosition ??
                                                   0) -
                                               widget.controls!
-                                                  .doubleTapToSeekTimeInSecond);
+                                                  .tapToSeekTimeInSecond);
                                         },
                                         child: Container(
                                             width: mediaQueryData.size.width *
@@ -575,7 +575,7 @@ class _FlutterHLSVideoPlayerState extends State<FlutterHLSVideoPlayer> {
 
                               // Double Tap to  seek animation
 
-                              if (state?.onLeftDoubleTapToSeek == true)
+                              if (state?.onLeftTapToSeek == true)
                                 SizedBox(
                                   width: mediaQueryData.size.width * 0.23,
                                   height: mediaQueryData.size.height * 0.13,
@@ -634,18 +634,18 @@ class _FlutterHLSVideoPlayerState extends State<FlutterHLSVideoPlayer> {
                               ),
 
                               // Forward
-                              if (state?.onRightDoubleTapToSeek == false)
+                              if (state?.onRightTapToSeek == false)
                                 (controls.hideForwardWidget == true)
                                     ? const SizedBox()
                                     : GestureDetector(
-                                        onDoubleTap: () {
+                                        onTap: () {
                                           widget.controller
-                                              .doubleTapToSeek(isLeft: false);
+                                              .tapToSeek(isLeft: false);
                                           widget.controller.seekTo((snapshot
                                                       .data?.currentPosition ??
                                                   0) +
                                               widget.controls!
-                                                  .doubleTapToSeekTimeInSecond);
+                                                  .tapToSeekTimeInSecond);
                                         },
                                         child: Container(
                                           alignment: Alignment.centerLeft,
@@ -665,7 +665,7 @@ class _FlutterHLSVideoPlayerState extends State<FlutterHLSVideoPlayer> {
 
                               // Double Tap to  seek animation
 
-                              if (state?.onRightDoubleTapToSeek == true)
+                              if (state?.onRightTapToSeek == true)
                                 SizedBox(
                                   width: mediaQueryData.size.width * 0.23,
                                   height: mediaQueryData.size.height * 0.13,

@@ -218,19 +218,19 @@ class FlutterHLSVideoPlayerController {
     }
   }
 
-  Future<void> doubleTapToSeek({bool isLeft = true}) async {
+  Future<void> tapToSeek({bool isLeft = true}) async {
     if (isLeft) {
-      _updateState(_currentState.copyWith(onLeftDoubleTapToSeek: true));
+      _updateState(_currentState.copyWith(onLeftTapToSeek: true));
       await Future.delayed(
         const Duration(milliseconds: 1500),
       );
-      _updateState(_currentState.copyWith(onLeftDoubleTapToSeek: false));
+      _updateState(_currentState.copyWith(onLeftTapToSeek: false));
     } else {
-      _updateState(_currentState.copyWith(onRightDoubleTapToSeek: true));
+      _updateState(_currentState.copyWith(onRightTapToSeek: true));
       await Future.delayed(
         const Duration(milliseconds: 1500),
       );
-      _updateState(_currentState.copyWith(onRightDoubleTapToSeek: false));
+      _updateState(_currentState.copyWith(onRightTapToSeek: false));
     }
   }
 
