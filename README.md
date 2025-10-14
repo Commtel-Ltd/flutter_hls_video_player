@@ -2,37 +2,22 @@
 
 Flutter HLS Video Player is a highly customizable and efficient m3u8 video player for Flutter applications, enabling seamless HLS (HTTP Live Streaming) playback. It offers adaptive quality selection, smooth streaming, and interactive controls, providing an optimal viewing experience across iOS and Android devices.
 
-## 📦 Installation
+## Installation
 
 Add the dependency in your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  flutter_hls_video_player: latest_version
+    flutter_hls_video_player:
+    git:
+      url: https://github.com/Commtel-Ltd/flutter_hls_video_player.git
+      ref: 'GIT_COMMIT'
 ```
 
 Run:
 ```sh
 flutter pub get
 ```
-
-## 🎥 Usage
-
-### 📽️ Portrait Video
-Check out the player in action:
-
-![Portrait GIF](https://raw.githubusercontent.com/dheeraj11qk/flutter_hls_video_player/main/assets/hls_demo_portrait.gif)
-
-
-
-### 📽️ Landscape Video
-Check out the player in action:
-
-![Landscape GIF](https://raw.githubusercontent.com/dheeraj11qk/flutter_hls_video_player/main/assets/hls_demo_landscape.gif)
-
-
-
-
 ### Import the package:
 
 ```dart
@@ -202,7 +187,7 @@ class _HomeViewState extends State<HomeView> {
 
 ```
 
-## 🎛️ Features
+## Features
 - Play **HLS (m3u8) streaming videos**
 - **Customizable controls** (play, pause, fullscreen, mute, quality selection)
 - Supports **landscape and portrait mode**
@@ -210,7 +195,7 @@ class _HomeViewState extends State<HomeView> {
 - Seamless integration with **Flutter's state management**
 - Works on **iOS and Android**
 
-## 📜 Permissions
+## Permissions
 
 ### **iOS Permissions**
 Add the following permissions in `Info.plist`:
@@ -250,13 +235,6 @@ Add the following permissions in `AndroidManifest.xml`:
 - **⚠ Supports only m3u8 URLs for HLS streaming. Other formats are not supported.**.
 
 - **On iOS Simulators and Android Emulators, the player may not function correctly. Please use a physical device for accurate testing**
-
-## ⏭️ Upcoming Features
-- **Subtitle Support for Enhanced Accessibility**
-- **Adjustable Playback Speed (Slow-Motion & Fast-Forward)**
-
-## 🤝 Contribute & Collaborate
-Have suggestions or found a bug? Open an issue or submit a pull request on [GitHub](https://github.com/dheeraj11qk/flutter_hls_video_player). Let's build a better player together!
 
 ## 📝 License
 This project is licensed under the **MIT License**.
