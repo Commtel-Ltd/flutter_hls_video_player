@@ -11,6 +11,7 @@ class FlutterHLSVideoPlayerController {
       StreamController<FlutterHLSVideoPlayerState>.broadcast();
   FlutterHLSVideoPlayerState _currentState = FlutterHLSVideoPlayerState();
   InAppWebViewController? _webViewController;
+  final _webViewReadyCompleter = Completer<void>();
   Stream<FlutterHLSVideoPlayerState> get stateStream => _stateController.stream;
   FlutterHLSVideoPlayerState get initialState => _currentState;
   FlutterHLSVideoPlayerState get currentState => _currentState;
@@ -31,6 +32,11 @@ class FlutterHLSVideoPlayerController {
 
   void onWebViewCreated(InAppWebViewController controller) {
     _webViewController = controller;
+
+    // Complete the future to signal that WebView is ready
+    if (!_webViewReadyCompleter.isCompleted) {
+      _webViewReadyCompleter.complete();
+    }
 
     _webViewController?.addJavaScriptHandler(
       handlerName: 'onBufferingStart',
@@ -127,6 +133,9 @@ class FlutterHLSVideoPlayerController {
         seekPosition: 0,
         playbackStatus: PlaybackStatus.loading,
       ));
+
+      // Wait for WebView to be ready before attempting to load video
+      await _webViewReadyCompleter.future;
 
       final escapedUrl = jsonEncode(m3u8Url);
       await _webViewController?.evaluateJavascript(source: '''
