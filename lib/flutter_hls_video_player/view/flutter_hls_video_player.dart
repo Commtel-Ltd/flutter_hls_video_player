@@ -203,9 +203,14 @@ class _FlutterHLSVideoPlayerState extends State<FlutterHLSVideoPlayer> {
                   if (widget.controls?.hideControls == false)
                     FadeAnimationWidget(
                       isVisible: (snapshot.data?.showControls == true),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
+                      child: GestureDetector(
+                        onTap: () {
+                          // Hide controls when tapping outside of buttons
+                          flutterHLSVideoPlayerController?.showControls(false);
+                        },
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
                           Wrap(
                             children: [
                               Container(
@@ -443,7 +448,7 @@ class _FlutterHLSVideoPlayerState extends State<FlutterHLSVideoPlayer> {
                             )
                         ],
                       ),
-                    )
+                    ),)
                 ],
               );
             }),
@@ -485,11 +490,16 @@ class _FlutterHLSVideoPlayerState extends State<FlutterHLSVideoPlayer> {
           if (snapshot.hasData) {
             var state = snapshot.data;
 
-            return Container(
-              color: Colors.black.withOpacity(0.1),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
+            return GestureDetector(
+              onTap: () {
+                // Hide controls when tapping outside of buttons
+                flutterHLSVideoPlayerController?.showControls(false);
+              },
+              child: Container(
+                color: Colors.black.withOpacity(0.1),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
                   // Top
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -700,7 +710,7 @@ class _FlutterHLSVideoPlayerState extends State<FlutterHLSVideoPlayer> {
                   ])
                 ],
               ),
-            );
+            ),);
           } else if (snapshot.hasError) {
             return Container();
           } else {
