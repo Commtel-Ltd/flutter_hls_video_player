@@ -11,9 +11,11 @@ class FlutterHLSVideoPlayerControls {
   Widget? exitFullscreenWidget;
   Widget? muteWidget;
   Widget? unMuteWidget;
+  Widget? downloadWidget;
   int tapToSeekTimeInSecond;
   Function? onTapSetting;
   Function? onTapArrowBack;
+  Function? onDownload;
   TextStyle? videoDurationTextStyle;
   TextStyle? currentTimeTextStyle;
   TextStyle? qualityButtonTextStyle;
@@ -34,6 +36,7 @@ class FlutterHLSVideoPlayerControls {
   bool hideVolumeWidget;
   bool hideFullscreenWidget;
   bool hideSeekBarWidget;
+  bool hideDownloadWidget;
 
   FlutterHLSVideoPlayerControls(
       {this.playWidget,
@@ -47,8 +50,10 @@ class FlutterHLSVideoPlayerControls {
       this.tapToSeekTimeInSecond = 5,
       this.onTapSetting,
       this.onTapArrowBack,
+      this.onDownload,
       this.muteWidget,
       this.unMuteWidget,
+      this.downloadWidget,
       this.videoDurationTextStyle,
       this.currentTimeTextStyle,
       this.qualityButtonTextStyle,
@@ -68,7 +73,8 @@ class FlutterHLSVideoPlayerControls {
       this.hideVideoDurationWidget = false,
       this.hideVolumeWidget = false,
       this.hideFullscreenWidget = false,
-      this.hideSeekBarWidget = false});
+      this.hideSeekBarWidget = false,
+      this.hideDownloadWidget = false});
 }
 
 double sanitizeDouble(dynamic value) {

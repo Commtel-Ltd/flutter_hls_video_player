@@ -339,8 +339,34 @@ class _FlutterHLSVideoPlayerState extends State<FlutterHLSVideoPlayer> {
                                           width: mediaQuery.size.width * 0.02,
                                         ),
 
+                                        // Download Button
+                                        (widget.controls?.hideDownloadWidget ==
+                                                true)
+                                            ? const SizedBox()
+                                            : GestureDetector(
+                                                onTap: () {
+                                                  if (widget.controls
+                                                          ?.onDownload !=
+                                                      null) {
+                                                    widget.controls
+                                                        ?.onDownload!();
+                                                  }
+                                                },
+                                                child: (widget.controls
+                                                            ?.downloadWidget !=
+                                                        null)
+                                                    ? widget.controls
+                                                        ?.downloadWidget!
+                                                    : const Icon(
+                                                        Icons.download,
+                                                        color: Colors.white),
+                                              ),
+                                        SizedBox(
+                                          width: mediaQuery.size.width * 0.02,
+                                        ),
+
                                         // Full Screen Toggle
-                                        (widget.controls?.hideVolumeWidget ==
+                                        (widget.controls?.hideFullscreenWidget ==
                                                 true)
                                             ? const SizedBox()
                                             : GestureDetector(

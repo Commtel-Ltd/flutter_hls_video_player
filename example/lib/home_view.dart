@@ -138,6 +138,17 @@ class _HomeViewState extends State<HomeView> {
                       onTapSetting: () {
                         _showPopupMenu(mContext: context);
                       },
+                      onDownload: () {
+                        // Implement your custom download logic here
+                        // This could be downloading the video, saving it to device, etc.
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text(
+                                'Download functionality called! Implement your custom download logic here.'),
+                            duration: Duration(seconds: 3),
+                          ),
+                        );
+                      },
                     ),
                   ),
                 ],
