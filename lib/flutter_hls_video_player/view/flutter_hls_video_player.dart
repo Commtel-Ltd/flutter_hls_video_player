@@ -339,32 +339,6 @@ class _FlutterHLSVideoPlayerState extends State<FlutterHLSVideoPlayer> {
                                           width: mediaQuery.size.width * 0.02,
                                         ),
 
-                                        // Download Button
-                                        (widget.controls?.hideDownloadWidget ==
-                                                true)
-                                            ? const SizedBox()
-                                            : GestureDetector(
-                                                onTap: () {
-                                                  if (widget.controls
-                                                          ?.onDownload !=
-                                                      null) {
-                                                    widget.controls
-                                                        ?.onDownload!();
-                                                  }
-                                                },
-                                                child: (widget.controls
-                                                            ?.downloadWidget !=
-                                                        null)
-                                                    ? widget.controls
-                                                        ?.downloadWidget!
-                                                    : const Icon(
-                                                        Icons.download,
-                                                        color: Colors.white),
-                                              ),
-                                        SizedBox(
-                                          width: mediaQuery.size.width * 0.02,
-                                        ),
-
                                         // Full Screen Toggle
                                         (widget.controls?.hideFullscreenWidget ==
                                                 true)
@@ -547,21 +521,44 @@ class _FlutterHLSVideoPlayerState extends State<FlutterHLSVideoPlayer> {
                                         color: Colors.white,
                                       ),
                                     )),
-                      (widget.controls?.hideSettingsWidget == true)
-                          ? const SizedBox()
-                          : GestureDetector(
-                              onTap: () {
-                                if (controls.onTapSetting != null) {
-                                  controls.onTapSetting!();
-                                }
-                              },
-                              child: (controls.settingsWidget != null)
-                                  ? controls.settingsWidget!
-                                  : Container(
-                                      padding: const EdgeInsets.all(12),
-                                      child: const Icon(Icons.settings,
-                                          color: Colors.white)),
-                            ),
+                      Row(
+                        children: [
+                          // Download Button
+                          (widget.controls?.hideDownloadWidget == true)
+                              ? const SizedBox()
+                              : GestureDetector(
+                                  onTap: () {
+                                    if (widget.controls?.onDownload != null) {
+                                      widget.controls?.onDownload!();
+                                    }
+                                  },
+                                  child: (widget.controls?.downloadWidget != null)
+                                      ? widget.controls?.downloadWidget!
+                                      : Container(
+                                          padding: const EdgeInsets.all(12),
+                                          child: const Icon(
+                                            Icons.download,
+                                            color: Colors.white),
+                                        ),
+                                ),
+                          // Settings Button
+                          (widget.controls?.hideSettingsWidget == true)
+                              ? const SizedBox()
+                              : GestureDetector(
+                                  onTap: () {
+                                    if (controls.onTapSetting != null) {
+                                      controls.onTapSetting!();
+                                    }
+                                  },
+                                  child: (controls.settingsWidget != null)
+                                      ? controls.settingsWidget!
+                                      : Container(
+                                          padding: const EdgeInsets.all(12),
+                                          child: const Icon(Icons.settings,
+                                              color: Colors.white)),
+                                ),
+                        ],
+                      ),
                     ],
                   ),
 
