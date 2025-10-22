@@ -124,8 +124,11 @@ class _FlutterHLSVideoPlayerState extends State<FlutterHLSVideoPlayer> {
                               if (snapshot.data != null &&
                                   snapshot.data?.playbackStatus !=
                                       PlaybackStatus.error) {
+                                // Toggle controls: hide if visible, show if hidden
+                                bool areControlsVisible =
+                                    snapshot.data?.showControls == true;
                                 flutterHLSVideoPlayerController
-                                    ?.showControls(true);
+                                    ?.showControls(!areControlsVisible);
                               }
                             },
                             child: Container(
