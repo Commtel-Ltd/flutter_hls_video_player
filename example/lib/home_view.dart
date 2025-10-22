@@ -14,12 +14,9 @@ class HomeView extends StatefulWidget {
 
 class _HomeViewState extends State<HomeView> {
   List<String> demoM3u8VideoUrls = [
-    "https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8",
-    "https://devstreaming-cdn.apple.com/videos/streaming/examples/img_bipbop_adv_example_fmp4/master.m3u8",
-    "https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.mp4/.m3u8",
-    "https://cph-p2p-msl.akamaized.net/hls/live/2000341/test/master.m3u8",
-    "https://moctobpltc-i.akamaihd.net/hls/live/571329/eight/playlist.m3u8",
-    "http://d3rlna7iyyu8wu.cloudfront.net/skip_armstrong/skip_armstrong_stereo_subs.m3u8 "
+    "https://storage.googleapis.com/ip-project-7e4d1.appspot.com/E06F7B41/e1ef6a9e6740335a48d97d9b67e080c0_ChmO0UkWUCWhoz2Vk70WaFWB1dg2.m3u8",
+    "https://storage.googleapis.com/ip-project-7e4d1.appspot.com/E06F7B41/59bb25fd5943c6df80dd19991997c08c_ChmO0UkWUCWhoz2Vk70WaFWB1dg2.m3u8",
+    "https://firebasestorage.googleapis.com/v0/b/ip-project-7e4d1.appspot.com/o/C56F39B9%2F9522550ff04f4ba2958b949b31749a6a_kwHNuhYBnbM135BJ14jf2dJqlIl2.m3u8?alt=media&token=ed0cf53e-88c0-429e-9c10-46bb459f2f01"
   ];
   ValueNotifier<int> activeVideoIndexValueNotifier = ValueNotifier(-1);
 
