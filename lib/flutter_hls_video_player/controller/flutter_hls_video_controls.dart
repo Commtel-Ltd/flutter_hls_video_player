@@ -79,12 +79,23 @@ class FlutterHLSVideoPlayerControls {
 
 double sanitizeDouble(dynamic value) {
   try {
-    if (value == null || (value is num && (value.isNaN || value.isNegative))) {
+    if (value == null) {
       return 0.0;
     }
-    return double.parse(value.toDouble().toStringAsFixed(1));
+    if (value is num) {
+      if (value.isNaN || value.isInfinite || value.isNegative) {
+        return 0.0;
+      }
+      return double.parse(value.toDouble().toStringAsFixed(1));
+    }
+    // Try to parse as double if it's a string
+    double parsed = double.parse(value.toString());
+    if (parsed.isNaN || parsed.isInfinite || parsed.isNegative) {
+      return 0.0;
+    }
+    return double.parse(parsed.toStringAsFixed(1));
   } catch (e) {
-    debugPrint("sanitizeDouble: $e");
+    debugPrint("sanitizeDouble: $e for value: $value");
     return 0.0;
   }
 }
@@ -92,14 +103,29 @@ double sanitizeDouble(dynamic value) {
 double sanitizeDoubleForSeekDuration(dynamic value,
     {double min = 0.0, double max = double.infinity}) {
   try {
-    if (value == null || (value is num && (value.isNaN || value.isNegative))) {
-      return 0.0;
+    if (value == null) {
+      return min;
     }
 
-    double sanitizedValue = double.parse(value.toDouble().toStringAsFixed(1));
-    return sanitizedValue.clamp(min, max); // Ensure value stays within range
+    double sanitizedValue;
+    if (value is num) {
+      if (value.isNaN || value.isInfinite || value.isNegative) {
+        return min;
+      }
+      sanitizedValue = double.parse(value.toDouble().toStringAsFixed(1));
+    } else {
+      // Try to parse as double if it's a string
+      double parsed = double.parse(value.toString());
+      if (parsed.isNaN || parsed.isInfinite || parsed.isNegative) {
+        return min;
+      }
+      sanitizedValue = double.parse(parsed.toStringAsFixed(1));
+    }
+
+    // Ensure value stays within range
+    return sanitizedValue.clamp(min, max);
   } catch (e) {
-    debugPrint("sanitizeDoubleForSeekDuration: $e");
-    return 0.0;
+    debugPrint("sanitizeDoubleForSeekDuration: $e for value: $value");
+    return min;
   }
 }

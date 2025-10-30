@@ -1,6 +1,6 @@
 name: flutter_hls_video_player
 description: "A highly customizable and efficient HLS (m3u8) video player for Flutter applications. Supports adaptive bitrate, custom UI controls, and seamless streaming on Android & iOS."
-version: 1.0.5
+version: 1.0.6
 homepage: https://github.com/dheeraj11qk/flutter_hls_video_player
 repository: https://github.com/dheeraj11qk/flutter_hls_video_player
 issue_tracker: https://github.com/dheeraj11qk/flutter_hls_video_player/issues
@@ -23,7 +23,7 @@ dev_dependencies:
 # following page: https://dart.dev/tools/pub/pubspec
 
 # The following section is specific to Flutter packages.
-flutter:
+# flutter:
 
   # To add assets to your package, add an assets section, like this:
   # assets:

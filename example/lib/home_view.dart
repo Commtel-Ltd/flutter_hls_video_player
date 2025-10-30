@@ -14,10 +14,10 @@ class HomeView extends StatefulWidget {
 
 class _HomeViewState extends State<HomeView> {
   List<String> demoM3u8VideoUrls = [
-    "https://storage.googleapis.com/ip-project-7e4d1.appspot.com/E06F7B41/e1ef6a9e6740335a48d97d9b67e080c0_ChmO0UkWUCWhoz2Vk70WaFWB1dg2.m3u8",
-    "https://storage.googleapis.com/ip-project-7e4d1.appspot.com/E06F7B41/59bb25fd5943c6df80dd19991997c08c_ChmO0UkWUCWhoz2Vk70WaFWB1dg2.m3u8",
-    "https://firebasestorage.googleapis.com/v0/b/ip-project-7e4d1.appspot.com/o/C56F39B9%2F9522550ff04f4ba2958b949b31749a6a_kwHNuhYBnbM135BJ14jf2dJqlIl2.m3u8?alt=media&token=ed0cf53e-88c0-429e-9c10-46bb459f2f01"
-  ];
+    "https://firebasestorage.googleapis.com/v0/b/ip-project-7e4d1.appspot.com/o/recordings%2FE06F7B41%2F0ccbda2357421272862e0fb5b7305210_ChmO0UkWUCWhoz2Vk70WaFWB1dg2.m3u8?alt=media&token=3e39489c-746d-4caf-b675-3c898a8bee71",
+    "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8?ref=developerinsider.co",
+    "https://test-streams.mux.dev/dai-discontinuity-deltatre/manifest.m3u8?ref=developerinsider.co",
+    ];
   ValueNotifier<int> activeVideoIndexValueNotifier = ValueNotifier(-1);
 
   FlutterHLSVideoPlayerController flutterHLSVideoPlayerController =

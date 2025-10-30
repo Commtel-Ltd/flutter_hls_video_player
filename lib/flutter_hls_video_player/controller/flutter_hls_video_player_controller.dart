@@ -12,16 +12,21 @@ class FlutterHLSVideoPlayerController {
   FlutterHLSVideoPlayerState _currentState = FlutterHLSVideoPlayerState();
   InAppWebViewController? _webViewController;
   final _webViewReadyCompleter = Completer<void>();
+  Completer<void>? _metadataReadyCompleter;
   Stream<FlutterHLSVideoPlayerState> get stateStream => _stateController.stream;
   FlutterHLSVideoPlayerState get initialState => _currentState;
   FlutterHLSVideoPlayerState get currentState => _currentState;
   Timer? videoMetadataTimer;
+  Timer? _metadataTimeoutTimer;
   DateTime? dateTime;
 
   void dispose() {
     _stateController.close();
     if (videoMetadataTimer != null) {
       videoMetadataTimer!.cancel();
+    }
+    if (_metadataTimeoutTimer != null) {
+      _metadataTimeoutTimer!.cancel();
     }
   }
 
@@ -63,7 +68,11 @@ class FlutterHLSVideoPlayerController {
         _updateState(_currentState.copyWith(
             playbackStatus: PlaybackStatus.loaded, showControls: true));
 
-        log("onBufferingEnd Flutter");
+        log("onCanPlay Flutter");
+
+        // Proactively check if metadata is available when canplay fires
+        // This handles cases where loadedmetadata fired before handler was registered
+        _checkMetadataAvailability();
       },
     );
 
@@ -104,6 +113,29 @@ class FlutterHLSVideoPlayerController {
           playbackStatus: PlaybackStatus.error,
           errorMessage: errorMessage,
         ));
+
+        // Complete the metadata completer with error to unblock any awaits
+        if (_metadataReadyCompleter != null && !_metadataReadyCompleter!.isCompleted) {
+          _metadataReadyCompleter!.completeError(errorMessage);
+        }
+
+        // Cancel timeout timer if running
+        _metadataTimeoutTimer?.cancel();
+      },
+    );
+
+    _webViewController?.addJavaScriptHandler(
+      handlerName: 'onMetadataLoaded',
+      callback: (args) {
+        log("onMetadataLoaded Flutter: $args");
+
+        // Cancel timeout timer since metadata loaded successfully
+        _metadataTimeoutTimer?.cancel();
+
+        // Complete the metadata ready completer
+        if (_metadataReadyCompleter != null && !_metadataReadyCompleter!.isCompleted) {
+          _metadataReadyCompleter!.complete();
+        }
       },
     );
   }
@@ -125,6 +157,10 @@ class FlutterHLSVideoPlayerController {
         onError(message: "Failed to load video");
         return;
       }
+
+      // Reset and create new metadata completer for this video load
+      _metadataReadyCompleter = Completer<void>();
+
       // Update the state to indicate video is loading
       _updateState(_currentState.copyWith(
         showControls: true,
@@ -141,6 +177,15 @@ class FlutterHLSVideoPlayerController {
       await _webViewController?.evaluateJavascript(source: '''
       hlfVideoLoad($escapedUrl);
     ''');
+
+      // Set up a timeout for metadata loading (10 seconds)
+      _metadataTimeoutTimer = Timer(const Duration(seconds: 10), () {
+        if (_metadataReadyCompleter != null && !_metadataReadyCompleter!.isCompleted) {
+          log("Metadata loading timeout");
+          _metadataReadyCompleter!.completeError("Video metadata loading timeout");
+          onError(message: "Video failed to load - timeout");
+        }
+      });
     } catch (e) {
       // Update the state in case of an error
       _updateState(_currentState.copyWith(
@@ -152,6 +197,21 @@ class FlutterHLSVideoPlayerController {
 
   Future<void> play() async {
     try {
+      // Wait for metadata to be ready before playing
+      if (_metadataReadyCompleter != null && !_metadataReadyCompleter!.isCompleted) {
+        try {
+          await _metadataReadyCompleter!.future.timeout(
+            const Duration(seconds: 10),
+            onTimeout: () {
+              throw Exception("Metadata not ready for playback");
+            },
+          );
+        } catch (e) {
+          log("Error waiting for metadata in play(): $e");
+          // Continue anyway, but this might result in 00:00/00:00
+        }
+      }
+
       await _webViewController?.evaluateJavascript(source: '''
         var videoE = document.getElementById('video');
         videoE.play();
@@ -348,24 +408,35 @@ class FlutterHLSVideoPlayerController {
           final currentPosition = await _webViewController?.evaluateJavascript(
               source: 'document.getElementById("video").currentTime');
 
-          _updateState(
-            _currentState.copyWith(
-              duration: sanitizeDouble(duration),
-              currentPosition: sanitizeDouble(currentPosition),
-              seekPosition: sanitizeDouble(currentPosition),
-            ),
-          );
+          // Verify duration is valid before updating (not NaN, not Infinity, not 0)
+          double sanitizedDuration = sanitizeDouble(duration);
+          double sanitizedPosition = sanitizeDouble(currentPosition);
 
-          if (_currentState.currentPosition == _currentState.duration) {
-            _stopVideoMetadata();
-            _updateState(_currentState.copyWith(
-                playbackStatus: PlaybackStatus.complete, showControls: true));
+          // Only update if we have valid duration
+          // (Check for actual numeric value, duration should be > 0 for valid videos)
+          if (sanitizedDuration > 0 && !sanitizedDuration.isInfinite) {
+            _updateState(
+              _currentState.copyWith(
+                duration: sanitizedDuration,
+                currentPosition: sanitizedPosition,
+                seekPosition: sanitizedPosition,
+              ),
+            );
+
+            // Check for video completion
+            if (_currentState.currentPosition >= _currentState.duration - 0.5) {
+              _stopVideoMetadata();
+              _updateState(_currentState.copyWith(
+                  playbackStatus: PlaybackStatus.complete, showControls: true));
+            }
+          } else {
+            // Duration still not valid, log it
+            log("Duration not yet valid: $duration (sanitized: $sanitizedDuration)");
           }
         } catch (e) {
-          _updateState(_currentState.copyWith(
-            playbackStatus: PlaybackStatus.error,
-            errorMessage: "_fetchVideoMetadata ${e.toString()}",
-          ));
+          log("Error in _fetchVideoMetadata: $e");
+          // Don't set error state for metadata fetch failures during playback
+          // as these might be transient issues
         }
       }
     });
@@ -373,6 +444,33 @@ class FlutterHLSVideoPlayerController {
 
   Future<void> _stopVideoMetadata() async {
     videoMetadataTimer?.cancel();
+  }
+
+  Future<void> _checkMetadataAvailability() async {
+    try {
+      // Check if metadata completer exists and is not completed
+      if (_metadataReadyCompleter == null || _metadataReadyCompleter!.isCompleted) {
+        return;
+      }
+
+      // Try to fetch duration to see if metadata is ready
+      final duration = await _webViewController?.evaluateJavascript(
+          source: 'document.getElementById("video").duration');
+
+      // If duration is valid (not NaN, not Infinity), metadata is ready
+      if (duration != null) {
+        double durationValue = sanitizeDouble(duration);
+        if (durationValue > 0 && !durationValue.isInfinite) {
+          log("Metadata detected as ready via proactive check, duration: $durationValue");
+          _metadataTimeoutTimer?.cancel();
+          if (!_metadataReadyCompleter!.isCompleted) {
+            _metadataReadyCompleter!.complete();
+          }
+        }
+      }
+    } catch (e) {
+      log("Error checking metadata availability: $e");
+    }
   }
 
   Future<void> setLoopMode(LoopMode mode) async {

@@ -75,7 +75,13 @@ video.controls = false;
 video.disablePictureInPicture = true;
 
 video.addEventListener('loadedmetadata', () => {
-  video.controls = false; 
+  video.controls = false;
+  // Notify Flutter that metadata is loaded and duration is available
+  window.flutter_inappwebview.callHandler('onMetadataLoaded', {
+    duration: video.duration,
+    videoWidth: video.videoWidth,
+    videoHeight: video.videoHeight
+  });
 });
 
 video.addEventListener('webkitbeginfullscreen', (event) => {
@@ -87,6 +93,32 @@ video.addEventListener('webkitbeginfullscreen', (event) => {
 
         if (Hls.isSupported()) {
             hls = new Hls();
+
+            // Register error handler BEFORE loading - critical for catching all errors
+            hls.on(Hls.Events.ERROR, function (event, data) {
+                let errorMessage = "Unknown error";
+                // Check if the error is fatal
+                if (data.fatal) {
+                    switch (data.type) {
+                        case Hls.ErrorTypes.NETWORK_ERROR:
+                            errorMessage = "Network error: Unable to fetch the video";
+                            break;
+                        case Hls.ErrorTypes.MEDIA_ERROR:
+                            errorMessage = "Media error: Invalid video format or corrupt stream";
+                            break;
+                        default:
+                            errorMessage = "Fatal error: Cannot play video stream";
+                            break;
+                    }
+                    console.error(errorMessage, data);
+                    window.flutter_inappwebview.callHandler('onError', errorMessage);
+                } else {
+                    // Non-fatal errors - just log them
+                    console.warn("HLS non-fatal error:", data);
+                }
+            });
+
+            // Now load the source
             hls.loadSource(videoUrl);
             hls.attachMedia(video);
 
@@ -96,39 +128,12 @@ video.addEventListener('webkitbeginfullscreen', (event) => {
                     const option = document.createElement('option');
                     option.value = index;
                     option.textContent = `\${level.height}p`;
-                    
                 });
 
-           
-        hls.on(Hls.Events.ERROR, function (event, data) {
-            let errorMessage = "Unknown error";
-            // Check if the error is related to an invalid URL
-            if (data.fatal === Hls.ErrorTypes.NETWORK_ERROR) {
-                errorMessage = "Network error: Unable to fetch the video";
-            } else if (data.fatal === Hls.ErrorTypes.MEDIA_ERROR) {
-                errorMessage = "Media error: Invalid video format or corrupt stream";
-            } else if (data.fatal === Hls.ErrorTypes.OTHER_ERROR) {
-                errorMessage = "Other error: General error with the video stream";
-            }
-
-            console.error(errorMessage);
-          
-            if(errorMessage != "Unknown error"){
-            window.flutter_inappwebview.callHandler('onError', errorMessage);
-            }
-            
-        });
-
-
-
-       
-
-   
-                 
-      window.flutter_inappwebview.callHandler('qualityLevels', JSON.stringify(qualityLevels));
+                window.flutter_inappwebview.callHandler('qualityLevels', JSON.stringify(qualityLevels));
             });
 
-         
+
         } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
             video.src = videoUrl;
         }else {
@@ -137,7 +142,7 @@ video.addEventListener('webkitbeginfullscreen', (event) => {
         window.flutter_inappwebview.callHandler('onError', errorMessage);
     }
 
-      
+
       }
 
       // Test Video Link
@@ -226,6 +231,28 @@ video.addEventListener('webkitbeginfullscreen', (event) => {
 
         video.addEventListener('canplay', () => {
             window.flutter_inappwebview.callHandler('onCanPlay');
+        });
+
+        // Handle video element errors (e.g., network issues, codec problems)
+        video.addEventListener('error', () => {
+            let errorMessage = "Video playback error";
+            if (video.error) {
+                switch (video.error.code) {
+                    case video.error.MEDIA_ERR_ABORTED:
+                        errorMessage = "Video playback aborted";
+                        break;
+                    case video.error.MEDIA_ERR_NETWORK:
+                        errorMessage = "Network error while loading video";
+                        break;
+                    case video.error.MEDIA_ERR_DECODE:
+                        errorMessage = "Video decode error";
+                        break;
+                    case video.error.MEDIA_ERR_SRC_NOT_SUPPORTED:
+                        errorMessage = "Video format not supported";
+                        break;
+                }
+            }
+            window.flutter_inappwebview.callHandler('onError', errorMessage);
         });
     </script>
 </body>

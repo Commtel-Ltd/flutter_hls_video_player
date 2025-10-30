@@ -403,7 +403,7 @@ class _FlutterHLSVideoPlayerState extends State<FlutterHLSVideoPlayer> {
                                                   .copyWith(
                                                   inactiveTrackColor: Colors
                                                       .grey
-                                                      .withOpacity(0.2),
+                                                      .withValues(alpha: 0.2),
                                                   trackHeight: 4.0,
                                                   trackShape:
                                                       _SliderCustomTrackShape(),
@@ -496,7 +496,7 @@ class _FlutterHLSVideoPlayerState extends State<FlutterHLSVideoPlayer> {
                 flutterHLSVideoPlayerController?.showControls(false);
               },
               child: Container(
-                color: Colors.black.withOpacity(0.1),
+                color: Colors.black.withValues(alpha: 0.1),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
